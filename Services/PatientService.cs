@@ -1,8 +1,9 @@
-public class MockPatientService : IPatientService
+public class PatientService : IPatientService
 {
     public List<Patient> GetPatients()
     {
         // Simulating async operation
+        string _address = "http://api.worldbank.org/countries?format=json";
 
         // Returning mock data
         var patients = new List<Patient>
@@ -32,7 +33,7 @@ public class MockPatientService : IPatientService
 
         return patients;
     }
-
+    
     public Patient GetPatient(string id){
         var patient = new Patient
             {
@@ -46,5 +47,4 @@ public class MockPatientService : IPatientService
             };
         return patient;
     }
-
 }

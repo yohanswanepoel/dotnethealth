@@ -3,7 +3,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IPatientService, MockPatientService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
 
 
 var app = builder.Build();

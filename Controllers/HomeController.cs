@@ -21,9 +21,9 @@ public class HomeController : Controller
 
         var patients = _patientService.GetPatients();
         mvm.Patients = patients;
-        if (id == null){
+        if (id != null){
            // Do nothing
-           mvm.SelectedPatient = null;
+           mvm.SelectedPatient = _patientService.GetPatient(id);
         
         }
         return View(mvm);
