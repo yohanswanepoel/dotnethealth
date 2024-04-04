@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "My FHIR Practice App";
+}
+
+@model List<Patient>
+
+<div class="text-center">
+    <h1 class="display-4">Patients</h1>
+    <table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Birth Date</th>
+            <th>Marital Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var patient in Model) {
+            <tr>
+                <td>@patient.Name</td>
+                <td>@patient.Gender.ToString()</td>
+                <td>@patient.BirthDate?.ToString("d")</td> <!-- Using ?. to safely access BirthDate since it is nullable -->
+                <td>@patient.MaritalStatus</td>
+            </tr>
+        }
+    </tbody>
+    </table>
+
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
