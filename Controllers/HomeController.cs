@@ -15,10 +15,18 @@ public class HomeController : Controller
         _patientService = patientService;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string id)
     {
+        PatientViewModel mvm=new PatientViewModel();
+
         var patients = _patientService.GetPatients();
-        return View(patients);
+        mvm.Patients = patients;
+        if (id == null){
+           // Do nothing
+           mvm.SelectedPatient = null;
+        
+        }
+        return View(mvm);
     }
 
     public IActionResult Privacy()
