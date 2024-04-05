@@ -88,10 +88,10 @@ public class PatientService : IPatientService
                 patient.Active = fhirpatient.Active ?? false;
                 patient.Name = name;
                 patient.Gender = Gender.Female;
-                // BirthDate = fhirpatient.BirthDate,
-                patient.BirthDate = new DateTime(1980, 5, 21);
-                //MaritalStatus = fhirpatient.MaritalStatus,
-                patient.MaritalStatus = "Married";
+                patient.BirthDate = DateTime.Parse(fhirpatient.BirthDate);
+                //patient.BirthDate = new DateTime(1980, 5, 21);
+                patient.MaritalStatus = fhirpatient.MaritalStatus?.Text ?? "Unknown";
+                //patient.MaritalStatus = "Married";
             }
             catch (FhirOperationException fhirOpEx)
             {
