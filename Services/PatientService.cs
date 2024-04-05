@@ -67,16 +67,48 @@ public class PatientService : IPatientService
     }
     
     public Patient GetPatient(string id) {
-        string fhir_url = $"{_base_url}/{id}";
-        var patient = new Patient
+        var patient = new Patient();
+        // Simulating async operation
+        try {
+            var fhirClient = new FhirClient("http://fhir-server-fhir-service.common-tools:8080/fhir").WithLenientSerializer();
+            try
             {
-                FhirId = "1",
-                Active = true,
-                Name = "John Doe",
-                Gender = Gender.Male,
-                BirthDate = new DateTime(1980, 5, 21),
-                MaritalStatus = "Married"
-            };
+                var fhirpatient = fhirClient.Read<Hl7.Fhir.Model.Patient>($"Patient/{id}");
+                var name = "";
+                if (fhirpatient.Name.Any()) // Checks if there are any names present
+                {
+                    var firstHumanName = fhirpatient.Name.First(); // Gets the first HumanName object
+                    
+                    var family = firstHumanName.Family; // Family name (no need to convert to list/array)
+                    var given = firstHumanName.Given.FirstOrDefault(); // Safely get the first given name if it exists
+                    
+                    name = given != null ? $"{family}, {given}" : family;
+                }
+                patient.FhirId = fhirpatient.Id;
+                patient.Active = fhirpatient.Active ?? false;
+                patient.Name = name;
+                patient.Gender = Gender.Female;
+                // BirthDate = fhirpatient.BirthDate,
+                patient.BirthDate = new DateTime(1980, 5, 21);
+                //MaritalStatus = fhirpatient.MaritalStatus,
+                patient.MaritalStatus = "Married";
+            }
+            catch (FhirOperationException fhirOpEx)
+            {
+                // Handle any FHIR operation errors
+                Console.WriteLine($"Error: {fhirOpEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Handle any other errors
+                Console.WriteLine($"General Error: {ex.Message}");
+            }
+            
+        }
+        catch (HttpRequestException e) {
+            Console.WriteLine("\nException Caught!");
+            Console.WriteLine("Message :{0} ", e.Message);
+        }
         return patient;
     }
 }
