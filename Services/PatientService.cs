@@ -1,40 +1,73 @@
+using System;
+using Newtonsoft.Json;
+using Hl7.Fhir.Model;
+using Hl7.Fhir.Rest;
+
 public class PatientService : IPatientService
 {
+    private string _base_url = "http://fhir-server-fhir-service.common-tools:8080/fhir";
+    static readonly HttpClient client = new HttpClient();
+
     public List<Patient> GetPatients()
     {
+        var patients = new List<Patient>();
         // Simulating async operation
-        string _address = "http://api.worldbank.org/countries?format=json";
-
-        // Returning mock data
-        var patients = new List<Patient>
-        {
-            new Patient
+        try {
+            var fhirClient = new FhirClient("http://fhir-server-fhir-service.common-tools:8080/fhir").WithLenientSerializer();
+            try
             {
-                FhirId = "1",
-                Active = true,
-                Name = "John Doe",
-                Gender = Gender.Male,
-                BirthDate = new DateTime(1980, 5, 21),
-                MaritalStatus = "Married",
-                MultipleBirth = false
-            },
-            new Patient
-            {
-                FhirId = "2",
-                Active = true,
-                Name = "Jane Smith",
-                Gender = Gender.Female,
-                BirthDate = new DateTime(1992, 8, 15),
-                MaritalStatus = "Single",
-                MultipleBirth = true
+                var fhirpatients = fhirClient.Search<Hl7.Fhir.Model.Patient>();
+                foreach (var entry in fhirpatients.Entry)
+                {
+                    var fhirpatient = (Hl7.Fhir.Model.Patient)entry.Resource;
+                    Console.WriteLine($"Patient ID: {fhirpatient.Id}");
+                    // Output other desired properties of the Patient
+                    var name = "";
+                    if (fhirpatient.Name.Any()) // Checks if there are any names present
+                    {
+                        var firstHumanName = fhirpatient.Name.First(); // Gets the first HumanName object
+                        
+                        var family = firstHumanName.Family; // Family name (no need to convert to list/array)
+                        var given = firstHumanName.Given.FirstOrDefault(); // Safely get the first given name if it exists
+                        
+                        name = given != null ? $"{family}, {given}" : family;
+                    }
+                    patients.Add(
+                        new Patient
+                            {
+                                FhirId = fhirpatient.Id,
+                                Active = fhirpatient.Active ?? false,
+                                Name = name,
+                                Gender = Gender.Female,
+                                // BirthDate = fhirpatient.BirthDate,
+                                BirthDate = new DateTime(1980, 5, 21),
+                                //MaritalStatus = fhirpatient.MaritalStatus,
+                                MaritalStatus = "Married"
+                            }
+                    );
+                }
             }
-            // Add more patients as needed
-        };
-
+            catch (FhirOperationException fhirOpEx)
+            {
+                // Handle any FHIR operation errors
+                Console.WriteLine($"Error: {fhirOpEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Handle any other errors
+                Console.WriteLine($"General Error: {ex.Message}");
+            }
+            
+        }
+        catch (HttpRequestException e) {
+            Console.WriteLine("\nException Caught!");
+            Console.WriteLine("Message :{0} ", e.Message);
+        }
         return patients;
     }
     
-    public Patient GetPatient(string id){
+    public Patient GetPatient(string id) {
+        string fhir_url = $"{_base_url}/{id}";
         var patient = new Patient
             {
                 FhirId = "1",
@@ -42,8 +75,7 @@ public class PatientService : IPatientService
                 Name = "John Doe",
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1980, 5, 21),
-                MaritalStatus = "Married",
-                MultipleBirth = false
+                MaritalStatus = "Married"
             };
         return patient;
     }

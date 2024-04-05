@@ -14,8 +14,7 @@ public class MockPatientService : IPatientService
                 Name = "John Doe",
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1980, 5, 21),
-                MaritalStatus = "Married",
-                MultipleBirth = false
+                MaritalStatus = "Married"
             },
             new Patient
             {
@@ -24,8 +23,7 @@ public class MockPatientService : IPatientService
                 Name = "Jane Smith",
                 Gender = Gender.Female,
                 BirthDate = new DateTime(1992, 8, 15),
-                MaritalStatus = "Single",
-                MultipleBirth = true
+                MaritalStatus = "Single"
             }
             // Add more patients as needed
         };
@@ -41,8 +39,7 @@ public class MockPatientService : IPatientService
                 Name = "John Doe",
                 Gender = Gender.Male,
                 BirthDate = new DateTime(1980, 5, 21),
-                MaritalStatus = "Married",
-                MultipleBirth = false
+                MaritalStatus = "Married"
             };
         return patient;
     }

@@ -37,7 +37,5 @@ public class Patient
     [MaxLength(20)]
     public string? MaritalStatus { get; set; } // Adjust according to your needs
 
-    public bool MultipleBirth { get; set; } = false;
-
     // Additional methods or properties here as needed
 }
