@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "My FHIR Practice App";
+    ViewData["Title"] = "My FHIR Practice App - Blue";
 }
 
 @model PatientViewModel
@@ -17,7 +17,7 @@
             </div>
             @if(Model.SelectedPatient is not null){
             <div class="col-md-8">
-                    <h2>@Model.SelectedPatient.Name - Patient Details</h2>
+                    <h2>@Model.SelectedPatient.Name - Patient Information</h2>
                     <ul>
                         <li>ID: @Model.SelectedPatient.Name</li>
                         <li>Active: @Model.SelectedPatient.Active</li>
